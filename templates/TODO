@@ -1,0 +1,15 @@
+# The skeleton is in place.
+# I need to create and tag the new instances next.
+# # make a github repo for these templates as well
+
+
+1. Create new vm disk of custom type
+2. import new vm disk
+x. configure new profile
+4. add new profile to new vm
+5. modify networking and CPU for new compute type
+6. deploy
+
+
+7. create host aggregates and availability zones
+8. set overcommit ratios for one type of host versus another
