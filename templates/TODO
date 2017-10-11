@@ -1,12 +1,9 @@
-create and tag the new instances next.
-
-
-1. Create new vm disk of custom type
-2. import new vm disk
+x. Create new vm disk of custom type
+x. import new vm disk
 x. configure new profile
-4. add new profile to new vm
-5. modify networking and CPU for new compute type
-6. deploy
+x. add new profile to new vm
+x. modify networking and CPU for new compute type
+x. deploy
 
 
 7. create host aggregates and availability zones
