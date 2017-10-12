@@ -150,7 +150,6 @@ resources:
             -
               type: ovs_bridge
               name: br-storage 
-              ovs_extra: "set bridge br-storage fail_mode=secure"
               members:
                 -
                   type: linux_bond
