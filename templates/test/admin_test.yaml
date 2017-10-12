@@ -58,7 +58,7 @@ parameters:
   internal_net_cidr:
     type: string
     description: CIDR for the internal network
-    default: 192.168.0.0/24
+    default: 192.168.123.0/24
   internal_net_pool_start:
     type: string 
     description: start of the IP pool for the external network

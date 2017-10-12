@@ -4,6 +4,7 @@ x. configure new profile
 x. add new profile to new vm
 x. modify networking and CPU for new compute type
 x. deploy
+x. deploy and access test instances
 
 
 7. create host aggregates and availability zones
