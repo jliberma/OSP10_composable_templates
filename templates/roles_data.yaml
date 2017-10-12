@@ -89,7 +89,7 @@
     - OS::TripleO::Services::VipHosts
 
 - name: ComputeB
-  CountDefault: 1
+  CountDefault: 0
   HostnameFormatDefault: '%stackname%-computeb-%index%'
   ServicesDefault:
     - OS::TripleO::Services::CACerts
@@ -112,6 +112,7 @@
     - OS::TripleO::Services::VipHosts
 
 - name: CephStorage
+  CountDefault: 0
   ServicesDefault:
     - OS::TripleO::Services::CACerts
     - OS::TripleO::Services::CephOSD
