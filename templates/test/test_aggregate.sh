@@ -2,14 +2,20 @@
 
 source ~/user1.rc
 
-for i in $(seq 1 8)
+for i in $(seq 1 12)
 do
 	openstack server delete vm$i
 done
 
 for i in $(seq 1 8)
 do 
-	openstack server create  --flavor m1.tiny --image cirros-0.3.4-x86_64 --key-name stack \
+	openstack server create  --flavor perf.tiny --image cirros-0.3.4-x86_64 --key-name stack \
+            --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 vm$i > /dev/null
+done
+
+for i in $(seq 9 12)
+do 
+	openstack server create  --flavor devel.tiny --image cirros-0.3.4-x86_64 --key-name stack \
             --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 vm$i > /dev/null
 done
 
