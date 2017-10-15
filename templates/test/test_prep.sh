@@ -24,6 +24,7 @@ openstack flavor set --property aggregate_instance_extra_specs:cpu_allocation_ra
 openstack flavor set --property aggregate_instance_extra_specs:cpu_allocation_ratio=16.0 devel.tiny
 
 openstack quota set --instances 16 tenant1
+openstack quota set --cores 40 tenant1
 
 # deploy the admin stack (creates project, user, networks)
 openstack stack create -t templates/test/admin_test.yaml admin_test

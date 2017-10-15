@@ -17,14 +17,14 @@ done
 # create perf vms
 for i in $(seq 1 8)
 do 
-	openstack server create  --flavor perf.tiny --image cirros-0.3.4-x86_64 --key-name stack \
+	openstack server create  --flavor perf.small --image cirros-0.3.4-x86_64 --key-name stack \
             --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 vm$i > /dev/null
 done
 
 # create devel vms
-for i in $(seq 9 12)
+for i in $(seq 9 16)
 do 
-	openstack server create  --flavor devel.tiny --image cirros-0.3.4-x86_64 --key-name stack \
+	openstack server create  --flavor devel.small --image cirros-0.3.4-x86_64 --key-name stack \
             --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 vm$i > /dev/null
 done
 
