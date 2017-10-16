@@ -18,13 +18,14 @@ openstack flavor create perf.tiny --ram 512 --vcpu 1 --ephemeral 10
 openstack flavor create devel.tiny --ram 512 --vcpu 1 --ephemeral 10
 openstack flavor create perf.small --ram 512 --vcpu 2 --ephemeral 20
 openstack flavor create devel.small --ram 512 --vcpu 2 --ephemeral 20
+openstack flavor create m1.small --ram 512 --vcpu 2 --ephemeral 20
 openstack flavor set --property aggregate_instance_extra_specs:cpu_allocation_ratio=8.0 perf.tiny
 openstack flavor set --property aggregate_instance_extra_specs:cpu_allocation_ratio=8.0 perf.small
 openstack flavor set --property aggregate_instance_extra_specs:cpu_allocation_ratio=16.0 devel.small
 openstack flavor set --property aggregate_instance_extra_specs:cpu_allocation_ratio=16.0 devel.tiny
 
-openstack quota set --instances 16 tenant1
-openstack quota set --cores 40 tenant1
+openstack quota set --instances 24 tenant1
+openstack quota set --cores 48 tenant1
 
 # deploy the admin stack (creates project, user, networks)
 openstack stack create -t templates/test/admin_test.yaml admin_test

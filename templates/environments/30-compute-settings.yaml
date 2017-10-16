@@ -5,8 +5,8 @@ parameter_defaults:
   ComputeBSchedulerHints:
     'capabilities:profile': 'computeb'
   NovaComputeExtraConfig:
-    nova::cpu_allocation_ratio: '16'
+    nova::cpu_allocation_ratio: '24'
     nova::ram_allocation_ratio: '1.5'
   ComputeBExtraConfig:
-    nova::cpu_allocation_ratio: '8'
-    nova::ram_allocation_ratio: '1'
+    nova::cpu_allocation_ratio: '24'
+    nova::ram_allocation_ratio: '1.5'
