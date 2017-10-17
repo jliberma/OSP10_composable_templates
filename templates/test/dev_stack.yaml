@@ -1,0 +1,106 @@
+heat_template_version: 2016-10-14
+
+description: This template will create a project and a user with a role, create internal network, and router.
+
+parameters:
+  project_name:
+    type: string
+    description: Project name that will be created it.
+    default: 'dev_tenant'
+  user_role:
+    type: string
+    description: User role to be assigned.
+    default: 'ResellerAdmin'
+  project_user:
+    type: string
+    description: User to be created inside the project.
+    default: 'dev_user'
+  project_user_passwd:
+    type: string
+    description: Password for the project defined user
+    default: 'redhat'
+  public_net_name:
+    type: string
+    description: Name of the external network.
+    default: 'public_net'
+  dev_net_name:
+    type: string
+    description: Name of the internal network.
+    default: 'dev_net'
+  dev_subnet_name:
+    type: string
+    description: Name of the internal subnet.
+    default: 'dev_subnet'
+  dev_router_name:
+    type: string
+    description: Name of the internal router.
+    default: 'dev_router'
+  dev_net_cidr:
+    type: string
+    description: CIDR for the internal network
+    default: 192.168.125.0/24
+  dev_net_pool_start:
+    type: string 
+    description: start of the IP pool for the external network
+    default: 192.168.125.1
+  dev_net_pool_end:
+    type: string
+    description: end of the IP pool for the external network
+    default: 192.168.125.253
+  dev_net_gateway:
+    type: string
+    description: Gateway for the public network
+    default: 192.168.125.254
+
+resources:
+
+  dev_project:
+    type: OS::Keystone::Project
+    properties:
+      name: { get_param: project_name }
+      domain: default
+      description: New project
+
+  dev_user:
+    type: OS::Keystone::User
+    properties:
+      name: { get_param: project_user }
+      domain: default
+      description: User
+      default_project: { get_resource: dev_project }
+      password: { get_param: project_user_passwd }
+      roles:
+        - role: { get_param: user_role}
+          project: { get_resource: dev_project }
+
+  dev_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: dev_net_name }
+      tenant_id: { get_resource: dev_project }
+
+  dev_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { get_param: dev_subnet_name }
+      network_id: { get_resource: dev_net }
+      cidr: { get_param: dev_net_cidr }
+      dns_nameservers: [ '10.12.50.1','192.168.122.1' ]
+      gateway_ip: { get_param: dev_net_gateway }
+      tenant_id: { get_resource: dev_project }
+      allocation_pools:
+        - start: { get_param: dev_net_pool_start }
+          end: { get_param: dev_net_pool_end }
+
+  dev_router:
+    type: OS::Neutron::Router
+    properties:
+      name: { get_param: dev_router_name }
+      external_gateway_info:
+        network: { get_param: public_net_name }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: dev_router }
+      subnet_id: { get_resource: dev_subnet }

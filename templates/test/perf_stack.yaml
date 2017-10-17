@@ -1,0 +1,106 @@
+heat_template_version: 2016-10-14
+
+description: This template will create a project and a user with a role, create internal network, and router.
+
+parameters:
+  project_name:
+    type: string
+    description: Project name that will be created it.
+    default: 'perf_tenant'
+  user_role:
+    type: string
+    description: User role to be assigned.
+    default: 'ResellerAdmin'
+  project_user:
+    type: string
+    description: User to be created inside the project.
+    default: 'perf_user'
+  project_user_passwd:
+    type: string
+    description: Password for the project defined user
+    default: 'redhat'
+  public_net_name:
+    type: string
+    description: Name of the external network.
+    default: 'public_net'
+  perf_net_name:
+    type: string
+    description: Name of the internal network.
+    default: 'perf_net'
+  perf_subnet_name:
+    type: string
+    description: Name of the internal subnet.
+    default: 'perf_subnet'
+  perf_router_name:
+    type: string
+    description: Name of the internal router.
+    default: 'perf_router'
+  perf_net_cidr:
+    type: string
+    description: CIDR for the internal network
+    default: 192.168.124.0/24
+  perf_net_pool_start:
+    type: string 
+    description: start of the IP pool for the external network
+    default: 192.168.124.1
+  perf_net_pool_end:
+    type: string
+    description: end of the IP pool for the external network
+    default: 192.168.124.253
+  perf_net_gateway:
+    type: string
+    description: Gateway for the public network
+    default: 192.168.124.254
+
+resources:
+
+  perf_project:
+    type: OS::Keystone::Project
+    properties:
+      name: { get_param: project_name }
+      domain: default
+      description: New project
+
+  perf_user:
+    type: OS::Keystone::User
+    properties:
+      name: { get_param: project_user }
+      domain: default
+      description: User
+      default_project: { get_resource: perf_project }
+      password: { get_param: project_user_passwd }
+      roles:
+        - role: { get_param: user_role}
+          project: { get_resource: perf_project }
+
+  perf_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: perf_net_name }
+      tenant_id: { get_resource: perf_project }
+
+  perf_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { get_param: perf_subnet_name }
+      network_id: { get_resource: perf_net }
+      cidr: { get_param: perf_net_cidr }
+      dns_nameservers: [ '10.12.50.1','192.168.122.1' ]
+      gateway_ip: { get_param: perf_net_gateway }
+      tenant_id: { get_resource: perf_project }
+      allocation_pools:
+        - start: { get_param: perf_net_pool_start }
+          end: { get_param: perf_net_pool_end }
+
+  perf_router:
+    type: OS::Neutron::Router
+    properties:
+      name: { get_param: perf_router_name }
+      external_gateway_info:
+        network: { get_param: public_net_name }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: perf_router }
+      subnet_id: { get_resource: perf_subnet }
