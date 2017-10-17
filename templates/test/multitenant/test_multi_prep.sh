@@ -5,8 +5,8 @@
 # prepare the overcloud
 source ~/overcloudrc
 
-openstack stack create -t /home/stack/templates/test/perf_stack.yaml perf_stack
-openstack stack create -t /home/stack/templates/test/dev_stack.yaml dev_stack
+openstack stack create -t /home/stack/templates/test/multitenant/perf_stack.yaml perf_stack
+openstack stack create -t /home/stack/templates/test/multitenant/dev_stack.yaml dev_stack
 
 openstack quota set --instances 24 perf_tenant
 openstack quota set --cores 48 perf_tenant
