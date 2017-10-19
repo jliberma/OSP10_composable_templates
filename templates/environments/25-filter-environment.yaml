@@ -1,6 +1,8 @@
 parameter_defaults:
 
-    NovaSchedulerDefaultFilters: ['AvailabilityZoneFilter', 'AggregateCoreFilter', 'AggregateRamFilter','ComputeFilter','ComputeCapabilitiesFilter','ImagePropertiesFilter','ServerGroupAntiAffinityFilter','ServerGroupAffinityFilter', 'PciPassthroughFilter', 'NUMATopologyFilter', 'AggregateInstanceExtraSpecsFilter']
+    NovaSchedulerDefaultFilters: ['AvailabilityZoneFilter', 'AggregateCoreFilter', 'AggregateRamFilter','ComputeFilter','ComputeCapabilitiesFilter','ImagePropertiesFilter', 'AggregateInstanceExtraSpecsFilter']
+
+    #NovaSchedulerDefaultFilters: ['AvailabilityZoneFilter', 'AggregateCoreFilter', 'AggregateRamFilter','ComputeFilter','ComputeCapabilitiesFilter','ImagePropertiesFilter','ServerGroupAntiAffinityFilter','ServerGroupAffinityFilter', 'PciPassthroughFilter', 'NUMATopologyFilter', 'AggregateInstanceExtraSpecsFilter']
     
     #NovaSchedulerDefaultFilters: ['AvailabilityZoneFilter','AggregateCoreFilter','RamFilter','ComputeFilter','ComputeCapabilitiesFilter','ImagePropertiesFilter','ServerGroupAntiAffinityFilter','ServerGroupAffinityFilter', 'PciPassthroughFilter', 'NUMATopologyFilter']
 

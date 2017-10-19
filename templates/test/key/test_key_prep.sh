@@ -36,6 +36,7 @@ openstack flavor create perf.tiny --ram 512 --vcpu 1 --ephemeral 10 --private
 openstack flavor create perf.small --ram 512 --vcpu 2 --ephemeral 20 --private
 openstack flavor create devel.small --ram 512 --vcpu 2 --ephemeral 20 --public
 openstack flavor create devel.tiny --ram 512 --vcpu 1 --ephemeral 10 --public
+openstack flavor create m1.small --ram 512 --vcpu 2 --ephemeral 20 --public
 
 # set flavor project
 PERF_ID=$(openstack project list | awk ' /perf/ { print $2 } ')
