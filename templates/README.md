@@ -38,10 +38,10 @@ overcloud-computeb-0.localdomain 12 3072
 Instance placement:
 m1.small.24 None
 m1.small.23 None
-devel.small.22 overcloud-compute-0
-devel.small.21 overcloud-compute-1
-devel.small.20 overcloud-compute-1
-devel.small.19 overcloud-compute-0
+devel.small.22 overcloud-compute-1
+devel.small.21 overcloud-compute-0
+devel.small.20 overcloud-compute-0
+devel.small.19 overcloud-compute-1
 devel.small.18 overcloud-compute-1
 devel.small.17 overcloud-compute-0
 devel.small.16 overcloud-compute-1
@@ -52,8 +52,8 @@ devel.small.12 overcloud-compute-0
 perf.small.11 overcloud-computeb-0
 perf.small.10 overcloud-computeb-1
 perf.small.9 overcloud-computeb-0
-perf.small.8 overcloud-computeb-0
-perf.small.7 overcloud-computeb-1
+perf.small.8 overcloud-computeb-1
+perf.small.7 overcloud-computeb-0
 perf.small.6 overcloud-computeb-1
 perf.small.5 overcloud-computeb-0
 perf.small.4 overcloud-computeb-1

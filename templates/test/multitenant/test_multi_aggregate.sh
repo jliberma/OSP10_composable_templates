@@ -6,6 +6,12 @@ echo "Nova scheduler filters:"
 C1IP=$(openstack server list | awk ' /controller-0/ { print $8 }' | cut -f2 -d=)
 ssh -l heat-admin -o StrictHostKeyChecking=no $C1IP sudo hiera nova::scheduler::filter::scheduler_default_filters
 
+# display aggregate values
+for i in $(openstack aggregate list -f value | awk ' { print $2 } ')
+do 
+	echo "$i aggregate" && openstack aggregate show $i | awk ' BEGIN { FS = "," } /hosts/ || /properties/ { print }'
+done
+
 # gather compute host settings
 echo "Host settings:"
 for i in $(openstack server list | awk ' /compute/ { print $8 } ' | cut -f2 -d=)
