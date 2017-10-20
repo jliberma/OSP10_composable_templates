@@ -1,0 +1,48 @@
+heat_template_version: 2016-10-14
+
+description: This template will create two servers and assign one an IP address.
+
+parameters:
+  tenant_key_name:
+    type: string
+    description: ssh key required for server creation
+    default: 'stack'
+    constraints:
+      - custom_constraint: nova.keypair
+  server1_name:
+    type: string
+    description: name of the instance
+    default: 'vm1'
+  server2_name:
+    type: string
+    description: name of the instance
+    default: 'vm2'
+  internal_net_name:
+    type: string
+    description: name of the internal network
+    default: 'internal_net'
+  internal_subnet_name:
+    type: string
+    description: name of the internal subnet
+    default: 'internal_subnet'
+  public_net_cidr:
+    type: string
+    description: CIDR for the public(external) network
+    default: 192.168.122.0/24
+  public_network:
+    type: string
+    description: Name of the public network.
+    default: 'public_net'
+
+resources:
+
+  security_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: internal_sg
+      description: Ping and SSH
+      rules:
+      - protocol: icmp
+      - protocol: tcp
+        port_range_min: 22
+        port_range_max: 22

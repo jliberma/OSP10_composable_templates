@@ -35,12 +35,18 @@ do
 	openstack server delete $i
 done
 
+# find subnet IDs
+source ~/overcloudrc
+PERF_NET=$(openstack network list | awk ' /perf_net/ { print $2 } ')
+DEV_NET=$(openstack network list | awk ' /dev_net/ { print $2 } ')
+USER_NET=$(openstack network list | awk ' /internal_net/ { print $2 } ')
+
 # create perf vms
 source ~/perf_user.rc
 for i in $(seq 1 11)
 do 
 	openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name perf \
-            --nic net-id=bd8d3546-f099-48f1-9219-5ab26452ba28 perf.small$i > /dev/null
+            --nic net-id=$PERF_NET perf.small.$i > /dev/null
 done
 
 # create devel vms
@@ -48,7 +54,7 @@ source ~/dev_user.rc
 for i in $(seq 12 22)
 do 
 	openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name dev \
-            --nic net-id=05604438-89ff-4baa-b4f7-793c267ae1f6 devel.small$i > /dev/null
+            --nic net-id=$DEV_NET devel.small.$i > /dev/null
 done
 
 # create generic vms
@@ -56,7 +62,7 @@ source ~/user1.rc
 for i in $(seq 23 24)
 do 
 	openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name stack \
-            --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 m1.small$i > /dev/null
+            --nic net-id=$USER_NET m1.small.$i > /dev/null
 done
 
 # output results
