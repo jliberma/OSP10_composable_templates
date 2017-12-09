@@ -4,7 +4,8 @@
 source ~/stackrc
 echo "Nova scheduler filters:"
 C1IP=$(openstack server list | awk ' /controller-0/ { print $8 }' | cut -f2 -d=)
-ssh -l heat-admin -o StrictHostKeyChecking=no $C1IP sudo hiera nova::scheduler::filter::scheduler_default_filters
+ssh -l heat-admin -o StrictHostKeyChecking=no $C1IP "sudo hiera nova::scheduler::filter::scheduler_default_filters | tr '\n' ' '"
+echo -e "\n"
 
 # gather compute host settings
 echo "Host settings:"
@@ -53,6 +54,9 @@ for i in $(openstack aggregate list -f value -c Name)
 do 
 	openstack aggregate show $i -f json | jq -c '[.name, .properties, .hosts]'
 done
+
+# show flavors
+openstack flavor list --all
 
 # view resource usage by host
 echo "Resource usage by host:"
