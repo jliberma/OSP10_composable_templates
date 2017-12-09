@@ -1,10 +1,30 @@
 #!/usr/bin/env bash
 
+# in this example we have perf flavors only available to the perf tenant
+# they are tagged to run on perf machines
+# the perf machines have more ram and lower cpu/ram overcommit ratios
+# the advantage is tagged flavors will only run on tagged machines
+# the disadvantage is that untagged flavors can run anywhere
+# enforced by flavors and aggregates, there is no physical separation of compute hosts
+# if we put everyone in the same tenant, everyone can run flavors tagged as perf or dev
+# no protection on the perf flavors
+# here we see dev flavors launched by perf tenant running on dev, and perf flavors launched
+# by perf tenant running on perf, and dev flavors launched by dev tenant running on dev,
+# but we also see untagged flavors running on the perf aggregate due to ram availability filters
+# in all cases we tag the aggregate and flavors, then add hosts and attributes to the aggregate
+# aggegate settings override local host settings.
+
 # check filter setting on controllers
 source ~/stackrc
 echo "Nova scheduler filters:"
 C1IP=$(openstack server list | awk ' /controller-0/ { print $8 }' | cut -f2 -d=)
-ssh -l heat-admin -o StrictHostKeyChecking=no $C1IP sudo hiera nova::scheduler::filter::scheduler_default_filters
+ssh -l heat-admin -o StrictHostKeyChecking=no $C1IP "sudo hiera nova::scheduler::filter::scheduler_default_filters | tr '\n' ' '"
+
+# display aggregate values
+for i in $(openstack aggregate list -f value | awk ' { print $2 } ')
+do 
+	echo "$i aggregate" && openstack aggregate show $i | awk ' BEGIN { FS = "," } /hosts/ || /properties/ { print }'
+done
 
 # gather compute host settings
 echo "Host settings:"
@@ -42,6 +62,7 @@ DEV_NET=$(openstack network list | awk ' /dev_net/ { print $2 } ')
 USER_NET=$(openstack network list | awk ' /internal_net/ { print $2 } ')
 
 # create perf vms
+# 20 cores total, should only run on perf nodes
 source ~/perf_user.rc
 for i in $(seq 1 10)
 do 
@@ -50,6 +71,7 @@ do
 done
 
 # create devel vms
+# 20 cores total, should only run on devel nodes
 source ~/dev_user.rc
 for i in $(seq 11 20)
 do 
@@ -83,11 +105,14 @@ do
 	openstack aggregate show $i -f json | jq -c '[.name, .properties, .hosts]'
 done
 
+# show flavors
+openstack flavor list --all -f value -c Name -c RAM -c VCPUs
+
 # view resource usage by host
 echo "Resource usage by host:"
 for i in $(openstack host list | awk ' /compute/ { print $2 } ')
 do 
-	openstack host show $i -f value -c Host -c CPU -c "Memory MB"| sed -n '1p;$p'
+	openstack host show $i -f value -c Host -c Project -c CPU -c "Memory MB"| sed -n '1p;$p'
 done
 
 # view vm placement

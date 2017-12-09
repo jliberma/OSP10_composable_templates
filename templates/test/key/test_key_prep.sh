@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # Prepare multiple tenants for aggregate tests
+# This test will show that jobs from multiple tenants can run across
+# all nodes even with aggregates set.
+# Only users in perf tenant can see the perf flavors.
 
 # prepare the overcloud
 source ~/overcloudrc
@@ -55,7 +58,7 @@ source ~/perf_user.rc
 openstack keypair create perf > ~/perf.pem
 chmod 600 ~/perf.pem
 
-# create a key for the development suer
+# create a key for the development user 
 sed -e 's/OS_USERNAME=admin/OS_USERNAME=dev_user/' -e 's/OS_PROJECT_NAME=admin/OS_PROJECT_NAME=dev_tenant/' -e 's/OS_PASSWORD=.*/OS_PASSWORD=redhat/' ~/overcloudrc > ~/dev_user.rc
 source ~/dev_user.rc
 openstack keypair create dev > ~/dev.pem
