@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# create a flavor for the computeb composable role
+
 source /home/stack/stackrc
 ironic node-update overcloud-$i add properties/capabilities='profile:computeb,boot_option:local'
 openstack flavor create --id auto --ram 8192 --disk 40 --vcpus 8 computeb
