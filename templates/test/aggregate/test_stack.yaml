@@ -1,0 +1,106 @@
+heat_template_version: 2016-10-14
+
+description: This template will create a project and a user with a role, create internal network, and router.
+
+parameters:
+  project_name:
+    type: string
+    description: Project name.
+    default: 'test_tenant'
+  user_role:
+    type: string
+    description: User role to be assigned.
+    default: 'ResellerAdmin'
+  project_user:
+    type: string
+    description: User to be created inside the project.
+    default: 'test_user'
+  project_user_passwd:
+    type: string
+    description: Password for the project defined user
+    default: 'redhat'
+  public_net_name:
+    type: string
+    description: Name of the external network.
+    default: 'public_net'
+  test_net_name:
+    type: string
+    description: Name of the internal network.
+    default: 'test_net'
+  test_subnet_name:
+    type: string
+    description: Name of the internal subnet.
+    default: 'test_subnet'
+  test_router_name:
+    type: string
+    description: Name of the internal router.
+    default: 'test_router'
+  test_net_cidr:
+    type: string
+    description: CIDR for the internal network
+    default: 192.168.126.0/24
+  test_net_pool_start:
+    type: string 
+    description: start of the IP pool for the external network
+    default: 192.168.126.1
+  test_net_pool_end:
+    type: string
+    description: end of the IP pool for the external network
+    default: 192.168.126.253
+  test_net_gateway:
+    type: string
+    description: Gateway for the public network
+    default: 192.168.126.254
+
+resources:
+
+  test_project:
+    type: OS::Keystone::Project
+    properties:
+      name: { get_param: project_name }
+      domain: default
+      description: New project
+
+  test_user:
+    type: OS::Keystone::User
+    properties:
+      name: { get_param: project_user }
+      domain: default
+      description: User
+      default_project: { get_resource: test_project }
+      password: { get_param: project_user_passwd }
+      roles:
+        - role: { get_param: user_role}
+          project: { get_resource: test_project }
+
+  test_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: test_net_name }
+      tenant_id: { get_resource: test_project }
+
+  test_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { get_param: test_subnet_name }
+      network_id: { get_resource: test_net }
+      cidr: { get_param: test_net_cidr }
+      dns_nameservers: [ '10.12.50.1','192.168.122.1' ]
+      gateway_ip: { get_param: test_net_gateway }
+      tenant_id: { get_resource: test_project }
+      allocation_pools:
+        - start: { get_param: test_net_pool_start }
+          end: { get_param: test_net_pool_end }
+
+  test_router:
+    type: OS::Neutron::Router
+    properties:
+      name: { get_param: test_router_name }
+      external_gateway_info:
+        network: { get_param: public_net_name }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: test_router }
+      subnet_id: { get_resource: test_subnet }
