@@ -6,21 +6,21 @@
 #source ~/overcloudrc
 #curl http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img | openstack image create --disk-format qcow2 --container-format bare  --public cirros-0.3.4-x86_64
 
+# create the stack
+openstack stack create -t ~/templates/aggregate/test_stack.yaml test_stack
+
 # configure the test stack environment
 sed -e 's/OS_USERNAME=admin/OS_USERNAME=test_user/' -e 's/OS_PROJECT_NAME=admin/OS_PROJECT_NAME=test_tenant/' -e 's/OS_PASSWORD=.*/OS_PASSWORD=redhat/' ~/overcloudrc > ~/test_user.rc
 source ~/test_user.rc
 openstack keypair create test > ~/test.pem
 chmod 600 ~/test.pem
 
-openstack stack create -t ~/templates/aggregate/test_stack.yaml test_stack
-
 # perform admin tasks
 source ~/overcloudrc
 
 # set tenant quotas
-# TODO -- move this to Heat
-openstack quota set --instances 24 tenant1
-openstack quota set --cores 48 tenant1
+openstack quota set --instances 24 test_tenant
+openstack quota set --cores 48 test_tenant
 
 # create the host aggregates
 openstack aggregate create --property performance=high performance
@@ -43,7 +43,6 @@ openstack flavor create perf.tiny --ram 512 --vcpu 1 --ephemeral 10 --public
 openstack flavor create perf.small --ram 512 --vcpu 2 --ephemeral 20 --public
 openstack flavor create devel.small --ram 512 --vcpu 2 --ephemeral 20 --public
 openstack flavor create devel.tiny --ram 512 --vcpu 1 --ephemeral 10 --public
-openstack flavor create m1.small --ram 512 --vcpu 2 --ephemeral 20 --public
 
 # tag flavors with aggregate keys
 openstack flavor set --property performance=high perf.tiny

@@ -53,7 +53,7 @@ USER_NET=$(openstack network list | awk ' /internal_net/ { print $2 } ')
 source ~/perf_user.rc
 for i in $(seq 1 11)
 do 
-	openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name perf \
+	openstack server create  --flavor perf.small --image cirros-0.3.4-x86_64 --key-name perf \
             --nic net-id=$PERF_NET perf.small.$i > /dev/null
 done
 
@@ -61,7 +61,7 @@ done
 source ~/dev_user.rc
 for i in $(seq 12 22)
 do 
-	openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name dev \
+	openstack server create  --flavor devel.small --image cirros-0.3.4-x86_64 --key-name dev \
             --nic net-id=$DEV_NET devel.small.$i > /dev/null
 done
 

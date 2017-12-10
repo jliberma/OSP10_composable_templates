@@ -18,31 +18,35 @@ do
 done
 
 # delete existing vms
-source ~/user1.rc
-for i in $(openstack server list -f value -c ID)
+source ~/overcloudrc
+for i in $(openstack server list -f value -c ID --all-projects)
 do
 	openstack server delete $i
 done
 
+# find subnet IDs
+USER_NET=$(openstack network list | awk ' /test_net/ { print $2 } ')
+
 # create perf vms
-for i in $(seq 1 8)
+source ~/test_user.rc
+for i in $(seq 1 11)
 do 
-	openstack server create  --flavor perf.small --image cirros-0.3.4-x86_64 --key-name stack \
-            --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 perf.small$i > /dev/null
+        openstack server create  --flavor perf.small --image cirros-0.3.4-x86_64 --key-name test \
+            --nic net-id=$USER_NET perf.small.$i > /dev/null
 done
 
 # create devel vms
-for i in $(seq 9 16)
+for i in $(seq 12 22)
 do 
-	openstack server create  --flavor devel.small --image cirros-0.3.4-x86_64 --key-name stack \
-            --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 devel.small$i > /dev/null
+        openstack server create  --flavor devel.small --image cirros-0.3.4-x86_64 --key-name test \
+            --nic net-id=$USER_NET devel.small.$i > /dev/null
 done
 
 # create generic vms
-for i in $(seq 17 24)
+for i in $(seq 23 24)
 do 
-	openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name stack \
-            --security-group internal_sg --nic net-id=8bfa60ce-9b58-43e6-b3f7-253ebceb51f4 m1.small$i > /dev/null
+        openstack server create  --flavor m1.small --image cirros-0.3.4-x86_64 --key-name test \
+            --nic net-id=$USER_NET m1.small.$i > /dev/null
 done
 
 # output results
