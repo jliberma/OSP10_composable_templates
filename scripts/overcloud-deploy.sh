@@ -6,6 +6,6 @@ exec openstack overcloud deploy --timeout=90 \
 	  -e /home/stack/templates/node-info.yaml \
 	  -r /home/stack/templates/roles_data.yaml \
 	  -e /home/stack/templates/network-isolation.yaml \
-	  --environment-directory /home/stack/templates/environments/
-	  
-
+	  -e /home/stack/templates/environments/20-network-environment.yaml \
+	  -e /home/stack/templates/environments/25-filter-environment.yaml \
+	  -e /home/stack/templates/environments/30-compute-settings.yaml

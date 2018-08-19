@@ -98,78 +98,45 @@ resources:
       config:
         os_net_config:
           network_config:
-            -
-              type: interface
+            - type: interface
               name: nic1
+              use_dhcp: false
+            - type: interface
+              name: nic2
+              use_dhcp: false
+            - type: interface
+              name: nic3
               use_dhcp: false
               dns_servers: {get_param: DnsServers}
               addresses:
-                -
-                  ip_netmask:
-                    list_join:
-                      - '/'
-                      - - {get_param: ControlPlaneIp}
-                        - {get_param: ControlPlaneSubnetCidr}
+              - ip_netmask:
+                  list_join:
+                  - '/'
+                  - - {get_param: ControlPlaneIp}
+                  - {get_param: ControlPlaneSubnetCidr}
               routes:
-                -
-                  ip_netmask: 169.254.169.254/32
-                  next_hop: {get_param: EC2MetadataIp}
-                -
-                  default: true
-                  next_hop: {get_param: ControlPlaneDefaultRoute}
-            -
-              type: ovs_bridge
+              - ip_netmask: 169.254.169.254/32
+                next_hop: {get_param: EC2MetadataIp}
+              - default: true
+                next_hop: {get_param: ControlPlaneDefaultRoute}
+            - type: ovs_bridge
               name: {get_input: bridge_name}
               members:
-                -
-                  type: linux_bond
-                  name: bond1
-                  bonding_options: {get_param: BondInterfaceOvsOptions}
-                  members:
-                    -
-                      type: interface
-                      name: nic2
-                      primary: true
-                    -
-                      type: interface
-                      name: nic3
-                -
-                  type: vlan
-                  device: bond1
-                  vlan_id: {get_param: InternalApiNetworkVlanID}
-                  addresses:
-                    -
-                      ip_netmask: {get_param: InternalApiIpSubnet}
-                -
-                  type: vlan
-                  device: bond1
-                  vlan_id: {get_param: TenantNetworkVlanID}
-                  addresses:
-                    -
-                      ip_netmask: {get_param: TenantIpSubnet}
-            -
-              type: ovs_bridge
-              name: br-storage 
-              members:
-                -
-                  type: linux_bond
-                  name: bond2
-                  bonding_options: {get_param: BondInterfaceOvsOptions}
-                  members:
-                    -
-                      type: interface
-                      name: nic4
-                      primary: true
-                    -
-                      type: interface
-                      name: nic5
-                -
-                  type: vlan
-                  device: bond2
-                  vlan_id: {get_param: StorageNetworkVlanID}
-                  addresses:
-                    -
-                      ip_netmask: {get_param: StorageIpSubnet}
+              - type: interface
+                name: nic4
+                use_dhcp: false
+              - type: vlan
+                vlan_id: {get_param: InternalApiNetworkVlanID}
+                addresses:
+                - ip_netmask: {get_param: InternalApiIpSubnet}
+              - type: vlan
+                vlan_id: {get_param: TenantNetworkVlanID}
+                addresses:
+                - ip_netmask: {get_param: TenantIpSubnet}
+              - type: vlan
+                vlan_id: {get_param: StorageNetworkVlanID}
+                addresses:
+                - ip_netmask: {get_param: StorageIpSubnet}
 
 outputs:
   OS::stack_id:

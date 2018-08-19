@@ -7,7 +7,7 @@ parameter_defaults:
   OvercloudCephStorageFlavor: ceph-storage
   
   # Number of nodes to deploy:
-  ControllerCount: 3
-  ComputeCount: 2
-  ComputeBCount: 2
-  CephStorageCount: 3
+  ControllerCount: 1
+  ComputeCount: 0
+  ComputeBCount: 1
+  CephStorageCount: 0
